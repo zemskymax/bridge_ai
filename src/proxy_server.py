@@ -1,31 +1,14 @@
 import asyncio
-import mcp.types
-import uvicorn
-from urllib.parse import quote # Added for ProxyTemplate logic if needed later
-from typing import Any, cast, Dict, Optional # Added Dict, Optional
-
-# Imports from other provided files (assuming they are accessible)
-from fastmcp.server.proxy import ProxyTool, FastMCPProxy, ProxyResource, ProxyTemplate, ProxyPrompt # Import necessary proxy types
+from typing import Any, Dict, Optional
+from fastmcp.server.proxy import ProxyTool, FastMCPProxy
 from fastmcp import FastMCP
 from fastmcp.client import Client
 from fastmcp.client.transports import SSETransport
-
-# Import specific types needed for method signatures and logic
-from mcp.server.lowlevel.helper_types import ReadResourceContents
 from mcp.shared.exceptions import McpError
-from mcp.types import (
-    METHOD_NOT_FOUND,
-    BlobResourceContents,
-    EmbeddedResource,
-    GetPromptResult,
-    ImageContent,
-    TextContent,
-    TextResourceContents,
-    PromptMessage as MCPPromptMessage # Alias to avoid conflict
-)
+from mcp.types import GetPromptResult, TextContent, ImageContent, EmbeddedResource
+from mcp.server.lowlevel.helper_types import ReadResourceContents
 from pydantic.networks import AnyUrl
-
-from fastmcp.prompts import Message, Prompt
+from fastmcp.prompts import Prompt
 from fastmcp.resources import Resource, ResourceTemplate
 from fastmcp.tools.tool import Tool
 from fastmcp.utilities.logging import get_logger
@@ -80,25 +63,6 @@ class MultiFastMCP(FastMCP):
         self._resources_lock = asyncio.Lock()
         self._prompts_lock = asyncio.Lock()
         self._templates_lock = asyncio.Lock() # Added
-
-        # Ensure self.app exists (for FastAPI/ASGI serving)
-        # if not hasattr(self, 'app') or self.app is None:
-        #     self.app = FastAPI()
-
-        # Add SSE endpoint to the FastAPI app
-        # @self.app.get("/sse")
-        # async def sse_endpoint(request: Request):
-        #     from fastapi.responses import StreamingResponse
-        #     import asyncio
-        #     async def event_generator():
-        #         # This is a placeholder event stream. Replace with real logic as needed.
-        #         while True:
-        #             if await request.is_disconnected():
-        #                 break
-        #             # Yield a keepalive event every 5 seconds
-        #             yield f"event: keepalive\ndata: \\n\n"
-        #             await asyncio.sleep(5)
-        #     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
     async def _build_tool_map(self):
         """Builds the map of tool names to the proxy that provides them."""
