@@ -1,0 +1,23 @@
+[project]
+name = "bridge-ai"
+version = "0.1.0"
+description = "Basic MCP server - for test purposes"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "mcp>=1.6.0",
+    "uvicorn",
+    "fastmcp",
+    "pydantic",
+    # "fastapi",  # Uncomment if you enable FastAPI endpoints
+]
+[[project.authors]]
+name = "Zemsky Max"
+email = "zemskymax@gmail.com"
+
+[build-system]
+requires = [ "hatchling",]
+build-backend = "hatchling.build"
+
+[project.scripts]
+bridge-ai = "proxy_server:run_proxy_server"
